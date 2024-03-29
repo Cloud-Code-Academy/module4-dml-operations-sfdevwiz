@@ -30,14 +30,20 @@ public with sharing class DMLOperations {
      * @return The Id of the newly created Account.
      */
     public static Id insertNewAccount() {
-        // Create a new Account instance
+       // Generate a random name for the Account for uniqueness
+       String randomName = 'Account-' + String.valueOf(System.currentTimeMillis());
 
-        // Set some fields on the Account
+        // Create a new Account instance
+        Account newAccount = new Account();
+            // Set some fields on the Account
+            newAccount.Name = randomName;
+            newAccount.Industry = 'Technology';
+            newAccount.Type = 'Prospect';
 
         // Insert the Account into the database
-
+        insert newAccount;
         // Return the Id of the newly created Account
-        return null;
+        return newAccount.Id;
     }
 
     /**
