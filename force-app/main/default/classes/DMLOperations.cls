@@ -118,13 +118,21 @@ public with sharing class DMLOperations {
      * @param newStage The new stage for the Opportunity.
      */
     public static void updateOpportunityStage(Id oppId, String newStage) {
-        // Retrieve the Opportunity from the database
-        // [SELECT Id FROM Opportunity WHERE Id = :oppId]
-
-        // Update the Opportunity's stage
-
-        // Update the Opportunity in the database
-    }
+      // Retrieve the Opportunity from the database
+      Opportunity oppToUpdate = [SELECT Id, StageName FROM Opportunity WHERE Id = :oppId LIMIT 1];
+        
+      // Check if the Opportunity is found
+      if (oppToUpdate != null) {
+          // Update the Opportunity's stage
+          oppToUpdate.StageName = newStage;
+          
+          // Update the Opportunity in the database
+          update oppToUpdate;
+      } else {
+          // Handle the scenario where the Opportunity is not found
+          System.debug('Opportunity with Id ' + oppId + ' not found.');
+      }
+  }
 
     /**
      * Question 6
