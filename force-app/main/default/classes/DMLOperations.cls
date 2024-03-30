@@ -54,10 +54,13 @@ public with sharing class DMLOperations {
      */
     public static void createAccount(String name, String industry) {
         // Create a new Account and set the fields inline
+        Account newAccount = new Account();
+            newAccount.Name = name;
+            newAccount.Industry = industry;
 
         // Insert the Account
+        insert newAccount;
     }
-
     
     /**
      * Question 3
@@ -67,14 +70,19 @@ public with sharing class DMLOperations {
      */
     public static Id insertNewContact(Id accountId) {
         // Create a new Contact instance
+        Contact newContact = new Contact();
 
         // Set some fields on the Contact
-        // Set the AccountId field to the given accountId
+        newContact.AccountId = accountId; // Link the Contact to the provided Account Id
+        newContact.FirstName = 'John'; // Set the first name
+        newContact.LastName = 'Doe'; // Set the last name
+        newContact.Email = 'john.doe@example.com'; // Set the email address
 
         // Insert the Contact into the database
+        insert newContact;
 
         // Return the Id of the newly created Contact
-        return null;
+        return newContact.Id;
     }
 
     /**
