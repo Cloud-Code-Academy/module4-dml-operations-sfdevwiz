@@ -17,7 +17,7 @@
  * The methods within this class serve as practical examples of different DML operations,
  * allowing developers to learn through practice and examples.
  *
- * @author Your Name
+ * @author Benton Urquhart
  */
 
 
@@ -30,14 +30,20 @@ public with sharing class DMLOperations {
      * @return The Id of the newly created Account.
      */
     public static Id insertNewAccount() {
-        // Create a new Account instance
+       // Generate a random name for the Account for uniqueness
+       String randomName = 'Account-' + String.valueOf(System.currentTimeMillis());
 
-        // Set some fields on the Account
+        // Create a new Account instance
+        Account newAccount = new Account();
+            // Set some fields on the Account
+            newAccount.Name = randomName;
+            newAccount.Industry = 'Technology';
+            newAccount.Type = 'Prospect';
 
         // Insert the Account into the database
-
+        insert newAccount;
         // Return the Id of the newly created Account
-        return null;
+        return newAccount.Id;
     }
 
     /**
@@ -48,10 +54,13 @@ public with sharing class DMLOperations {
      */
     public static void createAccount(String name, String industry) {
         // Create a new Account and set the fields inline
+        Account newAccount = new Account();
+            newAccount.Name = name;
+            newAccount.Industry = industry;
 
         // Insert the Account
+        insert newAccount;
     }
-
     
     /**
      * Question 3
@@ -61,14 +70,19 @@ public with sharing class DMLOperations {
      */
     public static Id insertNewContact(Id accountId) {
         // Create a new Contact instance
+        Contact newContact = new Contact();
 
         // Set some fields on the Contact
-        // Set the AccountId field to the given accountId
+        newContact.AccountId = accountId; // Link the Contact to the provided Account Id
+        newContact.FirstName = 'John'; // Set the first name
+        newContact.LastName = 'Doe'; // Set the last name
+        newContact.Email = 'john.doe@example.com'; // Set the email address
 
         // Insert the Contact into the database
+        insert newContact;
 
         // Return the Id of the newly created Contact
-        return null;
+        return newContact.Id;
     }
 
     /**
@@ -80,12 +94,21 @@ public with sharing class DMLOperations {
      */
     public static void updateContactLastName(Id contactId, String newLastName) {
         // Retrieve the Contact from the database
-        // [SELECT Id FROM Contact WHERE Id = :contactId]
-
-        // Update the Contact's last name
-
-        // Update the Contact in the database
-    }
+     // Retrieve the Contact from the database
+     Contact contactToUpdate = [SELECT Id, LastName FROM Contact WHERE Id = :contactId LIMIT 1];
+        
+     // Check if the Contact is found
+     if (contactToUpdate != null) {
+         // Update the Contact's last name
+         contactToUpdate.LastName = newLastName;
+         
+         // Update the Contact in the database
+         update contactToUpdate;
+     } else {
+         // Handle the scenario where the Contact is not found
+         System.debug('Contact with Id ' + contactId + ' not found.');
+     }
+ }
 
     /**
      * Question 5
@@ -95,13 +118,21 @@ public with sharing class DMLOperations {
      * @param newStage The new stage for the Opportunity.
      */
     public static void updateOpportunityStage(Id oppId, String newStage) {
-        // Retrieve the Opportunity from the database
-        // [SELECT Id FROM Opportunity WHERE Id = :oppId]
-
-        // Update the Opportunity's stage
-
-        // Update the Opportunity in the database
-    }
+      // Retrieve the Opportunity from the database
+      Opportunity oppToUpdate = [SELECT Id, StageName FROM Opportunity WHERE Id = :oppId LIMIT 1];
+    
+      // Check if the Opportunity is found
+      if (oppToUpdate != null) {
+          // Update the Opportunity's stage
+          oppToUpdate.StageName = newStage;
+          
+          // Update the Opportunity in the database
+          update oppToUpdate;
+      } else {
+          // Handle the scenario where the Opportunity is not found
+          System.debug('Opportunity with Id ' + oppId + ' not found.');
+      }
+  }
 
     /**
      * Question 6
@@ -113,11 +144,21 @@ public with sharing class DMLOperations {
      */
     public static void updateAccountFields(Id accountId, String newName, String newIndustry) {
         // Query the account
-        // [SELECT Id FROM Account WHERE Id = :accountId]
-
-        // Update the Account with the given Id with the new name and industry
+        Account accToUpdate = [SELECT Id, Name, Industry FROM Account WHERE Id = :accountId LIMIT 1];
+        
+        // Check if the Account is found
+        if (accToUpdate != null) {
+            // Update the Account with the new name and industry
+            accToUpdate.Name = newName;
+            accToUpdate.Industry = newIndustry;
+            
+            // Update the Account in the database
+            update accToUpdate;
+        } else {
+            // Handle the scenario where the Account is not found
+            System.debug('Account with Id ' + accountId + ' not found.');
+        }
     }
-
 
     /**
      * Question 7
