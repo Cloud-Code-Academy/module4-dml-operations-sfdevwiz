@@ -120,7 +120,7 @@ public with sharing class DMLOperations {
     public static void updateOpportunityStage(Id oppId, String newStage) {
       // Retrieve the Opportunity from the database
       Opportunity oppToUpdate = [SELECT Id, StageName FROM Opportunity WHERE Id = :oppId LIMIT 1];
-        
+    
       // Check if the Opportunity is found
       if (oppToUpdate != null) {
           // Update the Opportunity's stage
@@ -144,11 +144,21 @@ public with sharing class DMLOperations {
      */
     public static void updateAccountFields(Id accountId, String newName, String newIndustry) {
         // Query the account
-        // [SELECT Id FROM Account WHERE Id = :accountId]
-
-        // Update the Account with the given Id with the new name and industry
+        Account accToUpdate = [SELECT Id, Name, Industry FROM Account WHERE Id = :accountId LIMIT 1];
+        
+        // Check if the Account is found
+        if (accToUpdate != null) {
+            // Update the Account with the new name and industry
+            accToUpdate.Name = newName;
+            accToUpdate.Industry = newIndustry;
+            
+            // Update the Account in the database
+            update accToUpdate;
+        } else {
+            // Handle the scenario where the Account is not found
+            System.debug('Account with Id ' + accountId + ' not found.');
+        }
     }
-
 
     /**
      * Question 7
