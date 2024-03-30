@@ -94,12 +94,21 @@ public with sharing class DMLOperations {
      */
     public static void updateContactLastName(Id contactId, String newLastName) {
         // Retrieve the Contact from the database
-        // [SELECT Id FROM Contact WHERE Id = :contactId]
-
-        // Update the Contact's last name
-
-        // Update the Contact in the database
-    }
+     // Retrieve the Contact from the database
+     Contact contactToUpdate = [SELECT Id, LastName FROM Contact WHERE Id = :contactId LIMIT 1];
+        
+     // Check if the Contact is found
+     if (contactToUpdate != null) {
+         // Update the Contact's last name
+         contactToUpdate.LastName = newLastName;
+         
+         // Update the Contact in the database
+         update contactToUpdate;
+     } else {
+         // Handle the scenario where the Contact is not found
+         System.debug('Contact with Id ' + contactId + ' not found.');
+     }
+ }
 
     /**
      * Question 5
